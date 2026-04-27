@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Skills Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a1628;
+  --teal: #0e7490;
+  --teal-light: #22d3ee;
+  --red: #ef4444;
+  --green: #10b981;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: 80px;
+}
+.bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.18; animation: drift 12s ease-in-out infinite alternate; }
+.orb1 { width: 500px; height: 500px; background: #0e7490; top: -100px; left: -100px; }
+.orb2 { width: 400px; height: 400px; background: #0f766e; top: 40%; right: -80px; animation-delay: 3s; }
+.orb3 { width: 300px; height: 300px; background: #1d4ed8; bottom: 10%; left: 20%; animation-delay: 6s; }
+@keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(30px,40px) scale(1.08)} }
+
+.sticky {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+  background: rgba(10,22,40,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(14,116,144,0.3); padding: 10px 20px;
+}
+.sticky-inner { max-width: 820px; margin: 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pill { padding: 5px 14px; border-radius: 20px; font-size: .8em; font-weight: 600; white-space: nowrap; }
+.pill-q { background: rgba(255,255,255,.1); color: #e2e8f0; border: 1px solid rgba(255,255,255,.2); }
+.pill-c { background: rgba(16,185,129,.2); color: #6ee7b7; border: 1px solid #10b981; }
+.pill-w { background: rgba(239,68,68,.2); color: #fca5a5; border: 1px solid #ef4444; }
+.pill-p { background: rgba(245,158,11,.2); color: #fcd34d; border: 1px solid #f59e0b; }
+.prog-wrap { flex:1; background: rgba(255,255,255,.1); border-radius: 8px; height: 6px; min-width: 60px; overflow: hidden; }
+.prog-fill { background: linear-gradient(90deg, var(--teal), var(--teal-light)); height: 100%; border-radius: 8px; transition: width .5s; }
+
+#startScreen { position: relative; z-index: 1; max-width: 680px; margin: 100px auto 0; padding: 20px; }
+.start-card {
+  background: rgba(255,255,255,0.05); backdrop-filter: blur(20px);
+  border: 1px solid rgba(14,116,144,0.4); border-radius: 24px; padding: 44px 40px;
+  box-shadow: 0 40px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.cross-icon {
+  font-size: 3.5em; display: block; text-align: center; margin-bottom: 14px;
+  animation: pulse-icon 3s ease-in-out infinite;
+}
+@keyframes pulse-icon {
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 15px rgba(34,211,238,.4))}
+  50%{transform:scale(1.06);filter:drop-shadow(0 0 30px rgba(34,211,238,.8))}
+}
+.start-card h1 {
+  font-family: 'Playfair Display', serif; font-size: 2.2em; font-weight: 900;
+  color: #fff; text-align: center; margin-bottom: 6px;
+}
+.subtitle { text-align: center; color: var(--teal-light); font-size: .95em; margin-bottom: 28px; opacity: .85; }
+.section-label { color: #94a3b8; font-size: .8em; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+.filter-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.filter-btn {
+  padding: 7px 16px; border-radius: 20px; cursor: pointer; font-size: .85em; font-weight: 500;
+  transition: all .2s; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15); color: #94a3b8;
+}
+.filter-btn:hover { border-color: var(--teal-light); color: var(--teal-light); background: rgba(34,211,238,.08); }
+.filter-btn.active {
+  background: linear-gradient(135deg,rgba(14,116,144,.5),rgba(34,211,238,.2));
+  border-color: var(--teal-light); color: var(--teal-light); box-shadow: 0 0 14px rgba(34,211,238,.2);
+}
+.start-info { color: #64748b; font-size: .9em; text-align: center; margin-bottom: 22px; }
+.start-info span { color: var(--teal-light); font-weight: 700; }
+.btn-start {
+  width: 100%; padding: 16px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, var(--teal), #0891b2);
+  color: #fff; font-size: 1.1em; font-weight: 700; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; transition: all .25s; box-shadow: 0 8px 30px rgba(14,116,144,.5);
+}
+.btn-start:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(14,116,144,.6); }
+
+.by-line {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(14,116,144,0.25);
+}
+.by-line .designed-text {
+  color: #4a6080;
+  font-size: .75em;
+  letter-spacing: 2px;
+  font-weight: 500;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+.by-line .name-text {
+  color: var(--teal-light);
+  font-size: 1em;
+  font-weight: 700;
+  letter-spacing: 3px;
+  font-family: 'Playfair Display', serif;
+  display: block;
+}
+
+#quizWrapper { display: none; padding-top: 75px; position: relative; z-index: 1; }
+
+.q-card {
+  max-width: 820px; margin: 18px auto; padding: 28px 32px;
+  background: rgba(255,255,255,0.97); border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.3);
+  border-left: 5px solid rgba(14,116,144,0.3);
+  transition: border-color .35s; animation: slideIn .35s ease both;
+}
+@keyframes slideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.q-card.answered-correct { border-left-color: var(--green); }
+.q-card.answered-wrong   { border-left-color: var(--red); }
+
+.q-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.q-num {
+  background: linear-gradient(135deg, var(--teal), #0891b2);
+  color: #fff; min-width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .85em; flex-shrink: 0;
+}
+.cat-tag {
+  background: linear-gradient(135deg,#0e7490,#0891b2);
+  color: #fff; padding: 3px 12px; border-radius: 20px; font-size: .72em; font-weight: 600;
+}
+.q-text { font-size: 1.06em; font-weight: 600; color: #0f172a; line-height: 1.6; margin-bottom: 18px; }
+
+.opts { display: flex; flex-direction: column; gap: 9px; }
+.opt {
+  padding: 12px 18px; border: 2px solid #e2e8f0; border-radius: 12px;
+  cursor: pointer; font-size: .96em; text-align: left;
+  background: #fff; color: #334155; transition: all .18s;
+  font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 10px;
+  width: 100%;
+}
+.opt-letter {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #f1f5f9; border: 2px solid #cbd5e1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8em; font-weight: 700; color: #64748b; flex-shrink: 0; transition: all .18s;
+}
+.opt:hover:not(:disabled) { border-color: var(--teal); background: #f0fdfa; transform: translateX(5px); }
+.opt:hover:not(:disabled) .opt-letter { background: var(--teal); border-color: var(--teal); color: #fff; }
+.opt.correct { border-color: var(--green); background: #f0fdf4; color: #065f46; font-weight: 600; }
+.opt.correct .opt-letter { background: var(--green); border-color: var(--green); color: #fff; }
+.opt.wrong   { border-color: var(--red); background: #fef2f2; color: #7f1d1d; }
+.opt.wrong .opt-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.opt:disabled { cursor: default; }
+
+.q-feedback {
+  margin-top: 14px; padding: 12px 16px; border-radius: 12px;
+  font-size: .9em; line-height: 1.7; display: none;
+  direction: rtl; text-align: right; font-family: 'DM Sans', sans-serif;
+}
+.q-feedback.correct { background: #f0fdf4; border-right: 4px solid var(--green); border-left: none; color: #065f46; }
+.q-feedback.wrong   { background: #fef2f2; border-right: 4px solid var(--red); border-left: none; color: #7f1d1d; }
+
+.submit-wrap { max-width: 820px; margin: 24px auto; text-align: center; padding: 0 20px; }
+.btn-submit {
+  padding: 16px 70px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg,var(--teal),#0891b2);
+  color: #fff; font-size: 1.1em; font-weight: 700; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; transition: all .2s; box-shadow: 0 8px 30px rgba(14,116,144,.5);
+}
+.btn-submit:hover { transform: translateY(-3px); }
+.btn-submit:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+#resultsBox {
+  max-width: 820px; margin: 24px auto; padding: 40px;
+  background: rgba(255,255,255,.97); border-radius: 24px;
+  text-align: center; display: none;
+  box-shadow: 0 30px 80px rgba(0,0,0,.4); animation: slideIn .4s ease;
+}
+#resultsBox h2 { font-family: 'Playfair Display', serif; color: var(--navy); font-size: 2em; margin-bottom: 8px; }
+.score-ring { width: 160px; height: 160px; margin: 20px auto; position: relative; }
+.score-ring svg { transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: #e2e8f0; stroke-width: 12; }
+.ring-fg { fill: none; stroke: url(#ringGrad); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(.4,0,.2,1); }
+.score-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-center .big   { font-size: 2.4em; font-weight: 900; color: var(--navy); font-family: 'Playfair Display', serif; }
+.score-center .small { font-size: .8em; color: #64748b; }
+.result-msg { font-size: 1.05em; color: #475569; margin: 10px 0 24px; }
+.stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px; }
+.stat-card  { border-radius: 16px; padding: 16px 10px; }
+.stat-card.c { background: #f0fdf4; border: 2px solid #10b981; }
+.stat-card.w { background: #fef2f2; border: 2px solid #ef4444; }
+.stat-card.p { background: #fffbeb; border: 2px solid #f59e0b; }
+.stat-card .num { font-size: 2em; font-weight: 900; font-family: 'Playfair Display', serif; }
+.stat-card.c .num { color: #10b981; }
+.stat-card.w .num { color: #ef4444; }
+.stat-card.p .num { color: #f59e0b; }
+.stat-card .lbl { font-size: .8em; color: #64748b; margin-top: 4px; }
+.btn-re, .btn-home {
+  width: 100%; padding: 14px; border: none; border-radius: 14px;
+  font-size: 1.05em; font-weight: 700; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; margin-bottom: 10px; transition: all .2s;
+}
+.btn-re   { background: linear-gradient(135deg,var(--teal),#0891b2); color: #fff; }
+.btn-home { background: #f1f5f9; color: #475569; }
+.btn-re:hover   { transform: translateY(-2px); }
+.btn-home:hover { background: #e2e8f0; }
+.review-section { text-align: right; margin-top: 24px; direction: rtl; }
+.review-section h3 { color: var(--navy); font-size: 1.1em; margin-bottom: 14px; font-family: 'Playfair Display', serif; }
+.rev-item { padding: 14px 16px; border-radius: 12px; margin-bottom: 10px; font-size: .88em; line-height: 1.6; }
+.rev-item.wrong { background: #fef2f2; border-right: 4px solid var(--red); border-left: none; }
+.rev-item .rt   { font-weight: 700; margin-bottom: 5px; color: #1e293b; direction: ltr; text-align: left; }
+.rev-item .exp  { color: #64748b; font-size: .9em; margin-top: 5px; }
+
+@media(max-width:600px){
+  .start-card{padding:28px 22px}
+  .start-card h1{font-size:1.7em}
+  .q-card{padding:20px 18px;margin:14px 12px}
+  #resultsBox{padding:28px 20px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<div class="sticky" id="stickyBar" style="display:none">
+  <div class="sticky-inner">
+    <div class="pill pill-q" id="sNum">0/0</div>
+    <div class="pill pill-c" id="sC">✅ 0</div>
+    <div class="pill pill-w" id="sW">❌ 0</div>
+    <div class="pill pill-p" id="sP">📊 0%</div>
+    <div class="prog-wrap"><div class="prog-fill" id="sFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div id="startScreen">
+  <div class="start-card">
+    <span class="cross-icon">💻</span>
+    <h1>Computer Skills Quiz</h1>
+    <p class="subtitle">Hardware · Windows 10 · Microsoft Office · Networking · 94 Questions</p>
+    <div class="by-line" style="margin-top:0;margin-bottom:22px;padding-top:0;border-top:none;">
+      <span class="designed-text">Designed &amp; Developed by</span>
+      <span class="name-text">𝑴𝑶𝑺𝑻𝑨𝑭𝑨 𝑺𝑨𝑳𝑳𝑨𝑴&زعزع</span>
+    </div>
+    <p class="section-label">اختر الموضوع</p>
+    <div class="filter-group">
+      <button class="filter-btn active" onclick="selectCat('all',this)">📚 الكل (94)</button>
+      <button class="filter-btn" onclick="selectCat('hardware',this)">🖥️ Hardware (30)</button>
+      <button class="filter-btn" onclick="selectCat('windows',this)">🪟 Windows 10 (12)</button>
+      <button class="filter-btn" onclick="selectCat('office',this)">📄 Microsoft Office (31)</button>
+      <button class="filter-btn" onclick="selectCat('network',this)">🌐 Networking & Internet (21)</button>
+    </div>
+    <p class="start-info">عدد الأسئلة: <span id="qCount">94</span> سؤال</p>
+    <button class="btn-start" onclick="startQuiz()">ابدأ الاختبار ▶</button>
+    <div class="by-line">
+      <span class="designed-text">Designed &amp; Developed by</span>
+      <span class="name-text">𝑴𝑶𝑺𝑻𝑨𝑭𝑨 𝑺𝑨𝑳𝑳𝑨𝑴</span>
+    </div>
+  </div>
+</div>
+
+<div id="quizWrapper">
+  <div id="cardsContainer"></div>
+  <div class="submit-wrap">
+    <button class="btn-submit" id="submitBtn" onclick="showResults()" disabled>عرض النتيجة 🎯</button>
+  </div>
+  <div id="resultsBox">
+    <h2>🎉 انتهى الاختبار!</h2>
+    <div class="score-ring">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#0e7490"/>
+            <stop offset="100%" stop-color="#22d3ee"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-bg" cx="80" cy="80" r="64"/>
+        <circle class="ring-fg" id="ringFg" cx="80" cy="80" r="64" stroke-dasharray="402" stroke-dashoffset="402"/>
+      </svg>
+      <div class="score-center">
+        <span class="big" id="rScore">0</span>
+        <span class="small">من <span id="rTotal">0</span></span>
+      </div>
+    </div>
+    <div class="result-msg" id="rMsg"></div>
+    <div class="stats-grid">
+      <div class="stat-card c"><div class="num" id="rC">0</div><div class="lbl">✅ صح</div></div>
+      <div class="stat-card w"><div class="num" id="rW">0</div><div class="lbl">❌ غلط</div></div>
+      <div class="stat-card p"><div class="num" id="rP">0%</div><div class="lbl">📊 النسبة</div></div>
+    </div>
+    <button class="btn-re"   onclick="startQuiz()">🔄 إعادة الاختبار</button>
+    <button class="btn-home" onclick="goHome()">🏠 الرئيسية</button>
+    <div class="review-section" id="reviewDiv"></div>
+  </div>
+</div>
+
+<script>
+const LETTERS = ['A','B','C','D','E'];
+
+const CAT_LABELS = {
+  hardware: '🖥️ Hardware',
+  windows:  '🪟 Windows 10',
+  office:   '📄 Microsoft Office',
+  network:  '🌐 Networking & Internet'
+};
+
+const ALL = [
+  // ══════════════ HARDWARE ══════════════
+  {n:1, cat:'hardware',
+   q:"Where is RAM located?",
+   opts:["Mother Board","Expansion Board","External Drive","None"], c:0,
+   exp:"الـ RAM موجودة على الـ Motherboard (اللوحة الأم)، وهي متصلة مباشرةً بالـ CPU لضمان سرعة الوصول للبيانات."},
+  {n:2, cat:'hardware',
+   q:"A computer contain…?",
+   opts:["Motherboard","Hard disk drive","Central processing unit","All of the above"], c:3,
+   exp:"الكمبيوتر يحتوي على كل هذه المكونات: الـ Motherboard (اللوحة الأم)، الـ Hard disk drive (القرص الصلب)، والـ CPU (المعالج المركزي)."},
+  {n:3, cat:'hardware',
+   q:"Storage which lose data after power off is called………?",
+   opts:["Hard disc","Flash memory","Ram","Rom"], c:2,
+   exp:"الـ RAM (Random Access Memory) هي ذاكرة مؤقتة أو Volatile — تفقد جميع البيانات فور إيقاف تشغيل الكمبيوتر."},
+  {n:4, cat:'hardware',
+   q:"Which of these choices is an example of input device?",
+   opts:["Key board","Monitor","Mouse","Both 1 & 3"], c:3,
+   exp:"الـ Keyboard (لوحة المفاتيح) والـ Mouse (الفأرة) كلاهما أجهزة Input (إدخال). أما الـ Monitor فهو جهاز Output (إخراج)."},
+  {n:5, cat:'hardware',
+   q:"A printer is an ……… device?",
+   opts:["Input","Output","Processing","Monitor"], c:1,
+   exp:"الـ Printer (الطابعة) هو جهاز Output (إخراج)، لأنه يُنتج مخرجات مطبوعة من الكمبيوتر."},
+  {n:6, cat:'hardware',
+   q:"Which memory is known as volatile memory?",
+   opts:["RAM","ROM","Floppy","All of the above"], c:0,
+   exp:"الـ RAM هي الذاكرة الـ Volatile (المؤقتة) — تُفقد محتوياتها عند انقطاع الكهرباء. أما الـ ROM فهي Non-volatile (دائمة)."},
+  {n:7, cat:'hardware',
+   q:"All of the following are examples of input devices except?",
+   opts:["Scanner","Mouse","Printer","Keyboard"], c:2,
+   exp:"الـ Printer هو جهاز Output وليس Input. أما الـ Scanner والـ Mouse والـ Keyboard فكلها أجهزة Input."},
+  {n:8, cat:'hardware',
+   q:"Video, sound, and network cards are all examples of…..?",
+   opts:["Adapter cards","Hard disks","Processors","Input unit"], c:0,
+   exp:"كروت الفيديو والصوت والشبكة كلها أمثلة على Expansion/Adapter cards (كروت التوسعة) التي تُركَّب في الـ Motherboard."},
+  {n:9, cat:'hardware',
+   q:"A byte can be represented in the range of 0 to …..?",
+   opts:["2","255","256","1024"], c:1,
+   exp:"الـ Byte = 8 bits، ونطاقه من 0 إلى 255 (أي 256 قيمة مختلفة = 2⁸). القيمة القصوى هي 255."},
+  {n:10, cat:'hardware',
+   q:"Which of the following device can be used to store large amounts of data?",
+   opts:["Flash memory","CDROM","FLOPPY DISK","HARD DISK"], c:3,
+   exp:"الـ Hard Disk (القرص الصلب) يوفر أكبر سعة تخزينية، وقادر على تخزين Terabytes من البيانات."},
+  {n:11, cat:'hardware',
+   q:"Desktop computers, laptops, gaming consoles, sound and navigation systems for cars, PDAs, tablets, smartphones, and calculators are all types of…..?",
+   opts:["Microcomputers","Supercomputers","Mainframe computers","None"], c:0,
+   exp:"كل هذه الأجهزة تُصنَّف كـ Microcomputers (حواسيب شخصية)، وهي حواسيب مصممة للاستخدام الفردي."},
+  {n:12, cat:'hardware',
+   q:"Health institutions, banks, educational institutions, and insurance companies use __ to store data and run their daily operations…..?",
+   opts:["Microcomputers","Supercomputers","Mainframe computers","None"], c:2,
+   exp:"الـ Mainframe computers تُستخدم في المؤسسات الكبيرة لمعالجة كميات ضخمة من البيانات يومياً."},
+  {n:13, cat:'hardware',
+   q:"Used for research and exploration purposes because they can process massive amounts of data…?",
+   opts:["Microcomputers","Supercomputers","Mainframe computers","None"], c:1,
+   exp:"الـ Supercomputers هي الأسرع والأقوى، وتُستخدم في البحث العلمي واستكشاف الفضاء."},
+  {n:14, cat:'hardware',
+   q:"Unix, Linux, Mac OS, and Microsoft Windows are all…?",
+   opts:["Operating system","Application Software","Device Drivers","Utilities"], c:0,
+   exp:"Unix وLinux وMac OS وWindows كلها أنظمة تشغيل Operating Systems تُدير موارد الأجهزة."},
+  {n:15, cat:'hardware',
+   q:"System software designed to help analyze, configure, optimize, or maintain a computer like (Disk defragmenters) is called….?",
+   opts:["Operating system","Application Software","Device Drivers","Utilities"], c:3,
+   exp:"برامج الـ Utilities (المساعدة) مثل Disk Defragmenter وبرامج مكافحة الفيروسات تُستخدم للصيانة وتحسين أداء الكمبيوتر."},
+  {n:16, cat:'hardware',
+   q:"Microsoft Office is an example for…..?",
+   opts:["Operating system","Application Software","Device Drivers","Utilities"], c:1,
+   exp:"Microsoft Office مثال على Application Software (برامج التطبيقات)، وهي برامج مصممة لتنفيذ مهام محددة للمستخدم."},
+  {n:17, cat:'hardware',
+   q:"The read/write mechanism. It depends on the rotational speed of a disk, which is measured in……?",
+   opts:["rpm","m/s","Kg","meter"], c:0,
+   exp:"سرعة دوران القرص تُقاس بالـ RPM (Revolutions Per Minute - دورة في الدقيقة). الشائع: 5400 و7200 RPM."},
+  {n:18, cat:'hardware',
+   q:"Factors that can control CPU performance…..?",
+   opts:["Cache memory","Multiple cores","CPU Speed","Generation","All of the above"], c:4,
+   exp:"كل هذه العوامل تؤثر على أداء الـ CPU: الـ Cache memory، وعدد الـ Cores، وسرعة الساعة Clock Speed، وجيل المعالج Generation."},
+  {n:19, cat:'hardware',
+   q:"An internet speed of 8Mbps Can used to download with speed of…..?",
+   opts:["8 MBps","4 MBps","2 MBps","1 MBps"], c:3,
+   exp:"8 Mbps (ميجابت) ÷ 8 = 1 MBps (ميجابايت). السبب: كل Byte = 8 bits."},
+  {n:20, cat:'hardware',
+   q:"The GPUs interface with the motherboard by….?",
+   opts:["AGP slot","PCI slot","Ram slot","Cpu socket"], c:0,
+   exp:"كروت الشاشة GPU تتواصل مع الـ Motherboard عبر فتحة الـ AGP (Accelerated Graphics Port) أو الـ PCIe."},
+  {n:21, cat:'hardware',
+   q:"The __ typically handles communications among the CPU, RAM, and PCI Express (or AGP)?",
+   opts:["Northbridge","Southbridge","Ram","Cpu"], c:0,
+   exp:"الـ Northbridge مسؤول عن الاتصال السريع بين الـ CPU والـ RAM وكرت الشاشة."},
+  {n:22, cat:'hardware',
+   q:"The __ is an IC on the motherboard responsible for communication between the hard drive controller, I/O controller and the sound card, USB, PCI, ISA, IDE, BIOS, and Ethernet?",
+   opts:["Northbridge","Southbridge","Ram","Cpu"], c:1,
+   exp:"الـ Southbridge مسؤول عن التواصل مع الأجهزة الأبطأ مثل USB والصوت والتخزين."},
+  {n:23, cat:'hardware',
+   q:"The more modern solution, supporting larger hard drives, faster boot times, more security features, and—conveniently—graphics and mouse cursors?",
+   opts:["UEFI","Bios","C-mos","Legacy"], c:0,
+   exp:"الـ UEFI هو البديل الحديث للـ BIOS، يدعم أقراصاً أكبر وتشغيلاً أسرع وميزة Secure Boot للحماية."},
+  {n:24, cat:'hardware',
+   q:"HDMI digital signals transmit data in bits of data (on or off) in varying frequencies…?",
+   opts:["True","False"], c:0,
+   exp:"صحيح. الـ HDMI ينقل بيانات رقمية Digital بصيغة ثنائية (0 و1) بترددات متفاوتة."},
+  {n:25, cat:'hardware',
+   q:"HDMI video cables and ports transmit data in analog?",
+   opts:["True","False"], c:1,
+   exp:"خطأ. الـ HDMI ينقل إشارات رقمية Digital وليس Analog. هذه ميزة مهمة تميزه عن كابل الـ VGA القديم."},
+  {n:26, cat:'hardware',
+   q:"What is the fastest drive type of the following?",
+   opts:["Hdd","Ssd","M.2 ssd","Flash"], c:2,
+   exp:"الـ M.2 SSD هو الأسرع لأنه يستخدم بروتوكول NVMe عبر الـ PCIe، وهو أسرع بكثير من الـ SATA SSD والـ HDD."},
+  {n:27, cat:'hardware',
+   q:"What is the most powerful ram type in the following?",
+   opts:["SD RAM","RD RAM","DD RAM","None"], c:2,
+   exp:"الـ DDR RAM (Double Data Rate) هو الأحدث والأقوى، وأحدث جيل منه هو DDR5."},
+  {n:28, cat:'hardware',
+   q:"You can test a Power Supply Without Multimeter by make short on the ___pin until you hear a fan during working?",
+   opts:["(green-black)","(red-black)","Any two pin","We can't"], c:0,
+   exp:"وصّل السلك الأخضر (PS_ON) بأي سلك أسود (Ground) في موصل الـ 24-pin لتشغيل المروحة واختبار وحدة الطاقة Power Supply."},
+  {n:29, cat:'hardware',
+   q:"If you have motherboard with 4 ram slot (2 black &2 blue) and 2 ram (4g and 2g) which is the most preferred?",
+   opts:["(ram 2g) >black slot (ram 4g) >black slot","(ram 2g) >blue slot (ram 4g) >blue slot","(ram 2g) >blue slot (ram 4g) >black slot","All is the same"], c:2,
+   exp:"لتفعيل الـ Dual-channel، ضع الـ 2GB في الـ Blue slot والـ 4GB في الـ Black slot لمطابقة قنوات الألوان."},
+  {n:30, cat:'hardware',
+   q:"Socket used the motherboard for (mouse - keyboard - scanner - printer - external hard disk)?",
+   opts:["VGA","HDMI","PS2","USB"], c:3,
+   exp:"الـ USB (Universal Serial Bus) هو المنفذ القياسي للفأرة ولوحة المفاتيح والسكانر والطابعة والهارد الخارجي."},
+
+  // ══════════════ WINDOWS 10 ══════════════
+  {n:31, cat:'windows',
+   q:"You can view the basic information about your computer, such as Windows edition, processor, system type, full computer name, Windows activation by pressing…..?",
+   opts:["WIN + R","Ctrl + WIN + D button","WIN + Tab","WIN + Pause"], c:3,
+   exp:"اضغط WIN + Pause/Break لفتح نافذة System Properties التي تعرض إصدار Windows والـ Processor وحجم الـ RAM واسم الجهاز."},
+  {n:32, cat:'windows',
+   q:"You can use start run dialog by pressing…?",
+   opts:["WIN + Pause","WIN + R","Ctrl + WIN + D button","WIN + Tab"], c:1,
+   exp:"WIN + R يفتح نافذة Run (تشغيل) لتشغيل البرامج أو الوصول لأدوات النظام بسرعة."},
+  {n:33, cat:'windows',
+   q:"You can add a new virtual desktop by pressing….?",
+   opts:["WIN + R","WIN + Pause","Ctrl + WIN + D button","WIN + Tab"], c:2,
+   exp:"Ctrl + WIN + D ينشئ سطح مكتب افتراضي جديد Virtual Desktop في Windows 10."},
+  {n:34, cat:'windows',
+   q:"You can switch between your applications by pressing the……?",
+   opts:["Ctrl + WIN + D button","WIN + R","WIN + Pause","WIN + Tab"], c:3,
+   exp:"WIN + Tab يفتح Task View في Windows 10، ويعرض جميع النوافذ المفتوحة وسطوح المكتب الافتراضية."},
+  {n:35, cat:'windows',
+   q:"You can open File Explorer by pressing…..?",
+   opts:["Ctrl + WIN + D button","WIN + R","WIN + Pause","WIN + E button"], c:3,
+   exp:"WIN + E يفتح File Explorer (مستعرض الملفات) مباشرةً للوصول السريع إلى الملفات والمجلدات."},
+  {n:36, cat:'windows',
+   q:"You can Installing and Uninstalling Applications by open run dialog and then type",
+   opts:["appwiz.cpl","misconfig","ping","msinfo32"], c:0,
+   exp:"اكتب 'appwiz.cpl' في نافذة Run لفتح Programs and Features (إضافة أو إزالة البرامج)."},
+  {n:37, cat:'windows',
+   q:"To get more detailed system information You can use WIN + R to start run dialog and type",
+   opts:["appwiz.cpl","ping","command promp","msinfo32 or dxdiag"], c:3,
+   exp:"'msinfo32' يعرض معلومات تفصيلية عن الأجهزة والبرامج. 'dxdiag' يعرض تشخيصات DirectX."},
+  {n:38, cat:'windows',
+   q:"You can view your computer's file and folder structure and access files and folders from File Explorer from the",
+   opts:["Ribbon","Preview/Details pane","Search","Navigation pane"], c:3,
+   exp:"الـ Navigation Pane (جزء التنقل) على اليسار يعرض هيكل المجلدات الشجري للتنقل بين الملفات."},
+  {n:39, cat:'windows',
+   q:"You can perform layout, formatting, and sharing tasks, as well as see how File Explorer displays your files and folders from",
+   opts:["Ribbon","Search","Navigation pane","Preview/Details pane"], c:0,
+   exp:"الـ Ribbon في File Explorer يحتوي على تبويبات (Home, Share, View) لمهام التنسيق والمشاركة والعرض."},
+  {n:40, cat:'windows',
+   q:"You can adjust the size of text, orientation. And resolution settings for your computer from",
+   opts:["Task bar","Display Setting","Notification area","Any icons"], c:1,
+   exp:"Display Settings (كليك يمين على سطح المكتب > Display Settings) لضبط حجم النص والـ Resolution والاتجاه."},
+  {n:41, cat:'windows',
+   q:"Located in the far right of the taskbar",
+   opts:["Start bottom","Cortana","Windows Action Center","Search"], c:2,
+   exp:"الـ Windows Action Center (أيقونة الإشعارات) موجود في أقصى يمين شريط المهام Taskbar."},
+  {n:42, cat:'windows',
+   q:"You can still clicking on the microphone button on task bar to use your voice to speak to your computer by using",
+   opts:["Cortana","Yourself","Desktop","Icons"], c:0,
+   exp:"الـ Cortana هو المساعد الصوتي الافتراضي من Microsoft، اضغط على أيقونة الميكروفون في شريط المهام لاستخدامه."},
+
+  // ══════════════ MICROSOFT OFFICE ══════════════
+  {n:43, cat:'office',
+   q:"Which of the following best describes the Ribbon?",
+   opts:["A slider that you can use to zoom the document","A toolbar with various commands","A feature that can translate text into any language","A cable that connects your computer to a printer"], c:1,
+   exp:"الـ Ribbon هو شريط الأدوات الذي ينظم الأوامر في تبويبات وأقسام (Tabs & Groups) لسهولة الوصول إليها."},
+  {n:44, cat:'office',
+   q:"Which methods can you use to move text from one part of the document to another?",
+   opts:["Press the Print Screen key on your keyboard","Go to Backstage view and click the Move button","Press the delete key on your keyboard","Cut and paste the text"], c:3,
+   exp:"استخدم Cut (Ctrl+X) ثم Paste (Ctrl+V) لنقل النص من مكان لآخر في مستندات Office."},
+  {n:45, cat:'office',
+   q:"Suppose you made an error while writing allot of words, so the way for you to correct your mistake?",
+   opts:["Delete all of the text and start over","Use the font feature","Use the Spelling and Grammar feature","Use the clipboard"], c:2,
+   exp:"استخدم ميزة Spelling and Grammar (اختصار F7) لتدقيق الأخطاء الإملائية والنحوية وتصحيحها تلقائياً."},
+  {n:46, cat:'office',
+   q:"To Change page orientation to landscape or portrait use the ________ tap",
+   opts:["File","Home","Layout","Insert"], c:2,
+   exp:"اتجاه الصفحة Page Orientation (Portrait أو Landscape) موجود في تبويب Layout > Page Setup > Orientation."},
+  {n:47, cat:'office',
+   q:"In Microsoft office to Create a New Document",
+   opts:["Ctrl + O","Ctrl + S","Ctrl + P","Ctrl + N"], c:3,
+   exp:"Ctrl + N ينشئ مستنداً جديداً New Document في جميع تطبيقات Microsoft Office."},
+  {n:48, cat:'office',
+   q:"In Microsoft office to Open a Document",
+   opts:["Ctrl + O","Ctrl + N","Ctrl + S","Ctrl + P"], c:0,
+   exp:"Ctrl + O يفتح نافذة Open للبحث عن المستندات الموجودة وفتحها."},
+  {n:49, cat:'office',
+   q:"In Microsoft office to Save a Document",
+   opts:["Ctrl + O","Ctrl + N","Ctrl + S","Ctrl + P"], c:2,
+   exp:"Ctrl + S يحفظ المستند الحالي. للمستندات الجديدة، تظهر نافذة Save As لاختيار مكان الحفظ."},
+  {n:50, cat:'office',
+   q:"In Microsoft office to Print or Preview a Document",
+   opts:["Ctrl + O","Ctrl + P","Ctrl + N","Ctrl + S"], c:1,
+   exp:"Ctrl + P يفتح نافذة Print التي تتضمن أيضاً معاينة الطباعة Print Preview."},
+  {n:51, cat:'office',
+   q:"If you want to add text to the top of every page in your document, which feature would you use?",
+   opts:["View","Footer","Header","Backstage view"], c:2,
+   exp:"الـ Header (الرأس) يظهر في أعلى كل صفحة. اذهب إلى Insert > Header لإضافة نص ثابت في أعلى الصفحات."},
+  {n:52, cat:'office',
+   q:"The process of removing unwanted part of an image is called…?",
+   opts:["Hiding","Bordering","Cropping","Cutting"], c:2,
+   exp:"الـ Cropping (القص) يزيل الأجزاء غير المرغوب فيها من الصورة. موجود في Picture Format > Crop."},
+  {n:53, cat:'office',
+   q:"We can insert a page number at…?",
+   opts:["Header","Footer","Both A and B","None"], c:2,
+   exp:"يمكن إدراج رقم الصفحة Page Number في الـ Header (أعلى) أو الـ Footer (أسفل) أو كليهما."},
+  {n:54, cat:'office',
+   q:"To Go to end of a document, press __ from keyboard",
+   opts:["Num Lock","End","Tab","Home"], c:1,
+   exp:"Ctrl + End ينقلك لنهاية المستند. مفتاح End وحده ينقلك لنهاية السطر الحالي فقط."},
+  {n:55, cat:'office',
+   q:"To align right the selected text, the shortcut key is",
+   opts:["Ctrl + R","Ctrl + L","Ctrl + J","Ctrl + U"], c:0,
+   exp:"Ctrl + R = محاذاة لليمين Right. Ctrl + L = يسار Left. Ctrl + E = وسط Center. Ctrl + J = ضبط Justify."},
+  {n:56, cat:'office',
+   q:"Which Is Not A Font Style?",
+   opts:["Bold","Italic","Regular","Superscript"], c:3,
+   exp:"الـ Superscript (نص مرتفع مثل: x²) هو تأثير نصي وليس نمط خط Font Style. الأنماط هي: Bold وItalic وRegular."},
+  {n:57, cat:'office',
+   q:"A feature of MS Office that save a copy of the document in another location with another name",
+   opts:["Save","Auto Save","Backup","Save As"], c:3,
+   exp:"الـ Save As (F12) يحفظ نسخة من المستند باسم جديد أو في مكان مختلف، مع الاحتفاظ بالملف الأصلي."},
+  {n:58, cat:'office',
+   q:"Which of these software applications was not part of Microsoft Office?",
+   opts:["Paint","PowerPoint","Excel","MS Word"], c:0,
+   exp:"برنامج Paint هو ملحق Windows مستقل وليس جزءاً من حزمة Microsoft Office."},
+  {n:59, cat:'office',
+   q:"We can start MS Word by typing __ in the Run Dialog box.",
+   opts:["word.exe","winword.exe","msword.exe","docx.exe"], c:1,
+   exp:"اكتب 'winword.exe' في نافذة Run (WIN + R) لتشغيل Microsoft Word مباشرةً."},
+  {n:60, cat:'office',
+   q:"Which application is using sheets that comes with MS Office software group?",
+   opts:["MS Word","MS PowerPoint","MS Excel","MS Access"], c:2,
+   exp:"الـ MS Excel هو تطبيق جداول البيانات Spreadsheet في Office، ويستخدم أوراق عمل Worksheets داخل Workbooks."},
+  {n:61, cat:'office',
+   q:"The options Portrait and Landscape comes under",
+   opts:["Paper Size","Page Orientation","Page Margins","Page Rotation"], c:1,
+   exp:"Portrait (عمودي) وLandscape (أفقي) هما خياران تحت Page Orientation في تبويب Layout > Page Setup."},
+  {n:62, cat:'office',
+   q:"Which shortcut make selected text Italic?",
+   opts:["Ctrl + I","Ctrl + A","Ctrl + S","Ctrl + V"], c:0,
+   exp:"Ctrl + I = خط مائل Italic. Ctrl + B = خط عريض Bold. Ctrl + U = خط تحتي Underline."},
+  {n:63, cat:'office',
+   q:"We have copied an image from one document, now which shortcut will we used to paste it in another document?",
+   opts:["Ctrl + P","Ctrl + X","Ctrl + V","Ctrl + S"], c:2,
+   exp:"Ctrl + V هو اختصار اللصق Paste العالمي. Ctrl + C = نسخ Copy. Ctrl + X = قص Cut."},
+  {n:64, cat:'office',
+   q:"What does the Function Key - F12 do when you are using MS Office (Word, Excel, PowerPoint, etc.)",
+   opts:["Open 'Save As' Dialog Box","Shows 'Open' Dialog Box","Display 'Save' Dialog Box","Opens 'Font' Dialog Box"], c:0,
+   exp:"مفتاح F12 يفتح نافذة Save As في جميع تطبيقات Microsoft Office."},
+  {n:65, cat:'office',
+   q:"Which shortcut is used to select entire (all) text?",
+   opts:["Ctrl + I","Ctrl + A","Ctrl + S","Ctrl + V"], c:1,
+   exp:"Ctrl + A يحدد كل النص Select All في المستند، ويعمل في Word وExcel ومعظم محررات النصوص."},
+  {n:66, cat:'office',
+   q:"What is the shortcut key to search for any Spelling mistake on a document?",
+   opts:["F2","F5","F7","F9"], c:2,
+   exp:"مفتاح F7 يفتح أداة التدقيق الإملائي والنحوي Spelling and Grammar في Microsoft Office."},
+  {n:67, cat:'office',
+   q:"Which one of these is a valid Font Style?",
+   opts:["Superscript","Subscript","Regular","Strikethrough"], c:2,
+   exp:"Regular (عادي) هو نمط خط Font Style أصيل. أما Superscript وSubscript وStrikethrough فهي تأثيرات نصية Text Effects."},
+  {n:68, cat:'office',
+   q:"You can Protect Document by password by using Encrypt with Password from file tab and select the",
+   opts:["New","Info","Open","Save"], c:1,
+   exp:"اذهب إلى File > Info > Protect Document > Encrypt with Password لتعيين كلمة مرور للمستند."},
+  {n:69, cat:'office',
+   q:"You can add a custom lists like (sat-sun-mon etc.) in excel from file >> options >> and select",
+   opts:["New","Save as","Advanced","Save"], c:2,
+   exp:"File > Options > Advanced > Edit Custom Lists لإضافة قوائم مخصصة للملء التلقائي Auto-fill في Excel."},
+  {n:70, cat:'office',
+   q:"You can add charts in MS office by selecting",
+   opts:["Home","Tap","Design","Insert File"], c:3,
+   exp:"لإدراج مخطط Chart في MS Office، اذهب إلى تبويب Insert ثم مجموعة Charts."},
+  {n:71, cat:'office',
+   q:"The best application in MS for making a presentation is",
+   opts:["Word","Excel","Access","PowerPoint"], c:3,
+   exp:"Microsoft PowerPoint مصمم خصيصاً للعروض التقديمية Presentations بالشرائح والرسوم المتحركة والوسائط المتعددة."},
+  {n:72, cat:'office',
+   q:"The best application in MS to create a book is",
+   opts:["Word","Excel","Access","PowerPoint"], c:0,
+   exp:"Microsoft Word هو الأنسب للمستندات والتقارير والكتب، بفضل إمكانيات التنسيق والتخطيط المتقدمة."},
+  {n:73, cat:'office',
+   q:"The best application in MS for calculation is",
+   opts:["Word","Excel","Outlook","PowerPoint"], c:1,
+   exp:"Microsoft Excel مصمم للحسابات وتحليل البيانات والعمليات الحسابية الرقمية."},
+
+  // ══════════════ NETWORKING & INTERNET ══════════════
+  {n:74, cat:'network',
+   q:"………………connects network devices in a small area, such as a home, company, hospital, or school. These are all places that can easily use cable and Wi-Fi to connect.",
+   opts:["LAN","WAN","WLAN","VPN"], c:0,
+   exp:"الـ LAN (Local Area Network) يربط الأجهزة في منطقة محدودة كالمنزل أو المكتب أو المدرسة باستخدام الكابلات أو الـ Wi-Fi."},
+  {n:75, cat:'network',
+   q:"………………connects network devices in a wide area. This may mean connections between different buildings, cities, or even countries. It uses more complicated connection types.",
+   opts:["LAN","Internet","VPN","WAN"], c:3,
+   exp:"الـ WAN (Wide Area Network) يغطي مناطق جغرافية واسعة ويربط المدن والدول باستخدام بنية تحتية معقدة."},
+  {n:76, cat:'network',
+   q:"………………connects network devices using wireless technologies such as Wi-Fi.",
+   opts:["Internet","WLAN","VPN","WAN"], c:1,
+   exp:"الـ WLAN (Wireless Local Area Network) يربط الأجهزة لاسلكياً، وتقنية الـ Wi-Fi هي الأكثر شيوعاً فيه."},
+  {n:77, cat:'network',
+   q:"An intranet is a network that allows use from outside the organization. True or False?",
+   opts:["True","False"], c:1,
+   exp:"خطأ. الـ Intranet (الشبكة الداخلية) متاحة فقط داخل المؤسسة. أما الـ Extranet فتسمح بوصول محدود من الخارج."},
+  {n:78, cat:'network',
+   q:"Extranet is very similar to intranet, but it is implemented over a private WAN. It can operate between buildings, cities, and countries. True or False?",
+   opts:["True","False"], c:0,
+   exp:"صحيح. الـ Extranet يمتد على شبكة WAN خاصة ويتيح الوصول لمستخدمين خارجيين معتمدين أو شركاء."},
+  {n:79, cat:'network',
+   q:"………………is the system of global connections between all computer types around the world. It supports continuous transfers of information, images, voice, multimedia, and streaming.",
+   opts:["Intranet","Internet","Extranet","VPN"], c:1,
+   exp:"الـ Internet هو شبكة الشبكات العالمية التي تربط مليارات الأجهزة حول العالم وتدعم نقل البيانات والوسائط المتعددة."},
+  {n:80, cat:'network',
+   q:"………………is a virtual connection over the Internet that can be used to communicate among private networks. It can securely connect multiple branches of a business organization.",
+   opts:["Intranet","Internet","Extranet","VPN"], c:3,
+   exp:"الـ VPN (Virtual Private Network) ينشئ نفقاً مشفراً Encrypted Tunnel عبر الإنترنت للتواصل الآمن بين الشبكات الخاصة."},
+  {n:81, cat:'network',
+   q:"Which of the following is NOT considered a web search engine?",
+   opts:["Google.com","Bing.com","Instagram.com","Baidu.com"], c:2,
+   exp:"Instagram منصة تواصل اجتماعي لمشاركة الصور وليست محرك بحث. Google وBing وBaidu كلها محركات بحث Search Engines."},
+  {n:82, cat:'network',
+   q:"You can just type 'google' in your browser and press ………………to be redirected to the Google server in your country.",
+   opts:["Ctrl + Shift","Ctrl + A","Ctrl + Enter","Ctrl + Z"], c:2,
+   exp:"Ctrl + Enter يضيف تلقائياً 'www.' و'.com' حول النص المكتوب وينتقل مباشرةً للموقع."},
+  {n:83, cat:'network',
+   q:"Even if you make a spelling error, Google can usually figure out what you mean, if your word is close, and give you suggestions for your search criteria. True or False?",
+   opts:["True","False"], c:0,
+   exp:"صحيح. محرك Google يمتلك Autocorrect ذكي يكتشف الأخطاء الإملائية ويقترح الكلمة الصحيحة تلقائياً."},
+  {n:84, cat:'network',
+   q:"If you want to search for an exact sentence (Egypt Ministry of Health), what do you write in the Google search engine?",
+   opts:["Egypt Ministry of Health","\"Egypt Ministry of Health\"","Egypt,Ministry,of,Health","Egypt+Ministry+of+Health"], c:1,
+   exp:"وضع العبارة بين علامتي تنصيص \" \" يخبر Google بالبحث عن هذه العبارة بالضبط بنفس الترتيب."},
+  {n:85, cat:'network',
+   q:"In Google search engine, if you want to search for a phrase but want to allow some variations, you can use:",
+   opts:["Egypt Ministry of Health","\"Egypt Ministry of Health\"","\"*Egypt Ministry of Health\"","Egypt+Ministry+of+Health"], c:2,
+   exp:"استخدام الـ Wildcard (*) داخل علامتي التنصيص يتيح لـ Google استبدال أي كلمة في ذلك الموضع داخل العبارة."},
+  {n:86, cat:'network',
+   q:"In Google search engine, if you wish to search for (MOHP) but want to exclude (news) from results, write:",
+   opts:["MOHP + news","\"MOHP news\"","MOHP * news","MOHP – news"], c:3,
+   exp:"علامة الطرح (–) قبل الكلمة تستبعدها من نتائج البحث. مثال: MOHP –news يستبعد نتائج الأخبار."},
+  {n:87, cat:'network',
+   q:"In Google, if you need to search for (MOHP) on a specific website (cnn.com), write:",
+   opts:["MOHP: cnn.com","MOHP, cnn.com","MOHP* cnn.com","MOHP> cnn.com"], c:0,
+   exp:"استخدام النقطتين (:) مع اسم الموقع يحصر نتائج Google داخل موقع محدد. مثال: MOHP site:cnn.com"},
+  {n:88, cat:'network',
+   q:"Google allows you to search for a specific image by uploading your image or pasting the image's URL. True or False?",
+   opts:["True","False"], c:0,
+   exp:"صحيح. Google Reverse Image Search (البحث العكسي بالصورة) يتيح رفع صورة أو لصق رابطها للعثور على صور مشابهة."},
+  {n:89, cat:'network',
+   q:"To get your Google search results in a specific file format like PDF, write:",
+   opts:["MOHP-PDF","MOHP,PDF","MOHP:PDF","MOHP*PDF"], c:2,
+   exp:"استخدم النقطتين (:) مع نوع الملف مثل 'filetype:PDF MOHP' ليعرض Google نتائج بصيغة محددة فقط."},
+  {n:90, cat:'network',
+   q:"Google cannot solve mathematical equations like (√225+33)/12. True or False?",
+   opts:["True","False"], c:1,
+   exp:"خطأ. Google يستطيع حل المعادلات الرياضية Mathematical Equations مباشرةً في شريط البحث، بما فيها الجذور التربيعية والعمليات المعقدة."},
+  {n:91, cat:'network',
+   q:"………………is a microblogging service through which users can broadcast short messages, or 'tweets,' to their followers, who are able to read the tweets as soon as they are posted.",
+   opts:["Instagram","Twitter","Facebook","Google+"], c:1,
+   exp:"Twitter (المعروف الآن بـ X) هو منصة Microblogging حيث يكتب المستخدمون رسائل قصيرة تُسمى Tweets تظهر فوراً لمتابعيهم."},
+  {n:92, cat:'network',
+   q:"In this Internet-based social network of Google, ………………replaced groups with 'Circles' and chats with what they call 'Hangouts.'",
+   opts:["Instagram","Twitter","Facebook","Google+"], c:3,
+   exp:"Google+ كانت الشبكة الاجتماعية من Google، وتميزت بميزة Circles لتنظيم جهات الاتصال وHangouts للمحادثات المرئية."},
+  {n:93, cat:'network',
+   q:"………………is a social network developed specifically for the business and employment community. Employers can post jobs and job seekers can post their CVs.",
+   opts:["Instagram","Twitter","Facebook","LinkedIn"], c:3,
+   exp:"LinkedIn هي شبكة التواصل المهني المصممة للباحثين عن عمل وأصحاب العمل، ويمكن نشر السير الذاتية CVs وعروض العمل Jobs."},
+  {n:94, cat:'network',
+   q:"………………is a free online encyclopedia, created and edited by volunteers around the world and hosted by the Wikimedia Foundation.",
+   opts:["Google","Wikipedia","Instagram","Twitter"], c:1,
+   exp:"Wikipedia هي الموسوعة الحرة المجانية على الإنترنت، يكتبها ويراجعها ملايين المتطوعين حول العالم وتستضيفها مؤسسة Wikimedia Foundation."}
+];
+
+let selCat='all', questions=[], answered=0, score=0, wrong=0;
+
+function selectCat(cat, btn) {
+  selCat = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const n = cat==='all' ? ALL.length : ALL.filter(q=>q.cat===cat).length;
+  document.getElementById('qCount').textContent = n;
+}
+
+function startQuiz() {
+  questions = selCat==='all' ? [...ALL] : ALL.filter(q=>q.cat===selCat);
+  answered=0; score=0; wrong=0;
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('resultsBox').style.display='none';
+  document.getElementById('quizWrapper').style.display='block';
+  document.getElementById('stickyBar').style.display='block';
+  updateSticky();
+  renderCards();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderCards() {
+  const container = document.getElementById('cardsContainer');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className='q-card'; card.id='card-'+i;
+    card.style.animationDelay = Math.min(i*0.02, 0.6)+'s';
+    const optsHtml = q.opts.map((opt, oi) => `
+      <button class="opt" data-orig="${oi}" onclick="checkAns(${i},${oi},${q.c})">
+        <div class="opt-letter">${LETTERS[oi]}</div>
+        <span>${opt}</span>
+      </button>`).join('');
+    card.innerHTML = `
+      <div class="q-header">
+        <div class="q-num">Q${q.n}</div>
+        <div class="cat-tag">${CAT_LABELS[q.cat]||q.cat}</div>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="opts" id="opts-${i}">${optsHtml}</div>
+      <div class="q-feedback" id="fb-${i}"></div>`;
+    container.appendChild(card);
+  });
+  document.getElementById('submitBtn').disabled = true;
+}
+
+function checkAns(qIdx, chosen, correct) {
+  const optsDiv = document.getElementById('opts-'+qIdx);
+  if(optsDiv.querySelector('.correct,.wrong')) return;
+  const isOk = parseInt(chosen)===parseInt(correct);
+  Array.from(optsDiv.querySelectorAll('.opt')).forEach(btn=>{
+    btn.disabled=true;
+    if(parseInt(btn.dataset.orig)===parseInt(correct)) btn.classList.add('correct');
+    else if(parseInt(btn.dataset.orig)===parseInt(chosen)&&!isOk) btn.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb-'+qIdx);
+  fb.style.display='block';
+  fb.className='q-feedback '+(isOk?'correct':'wrong');
+  fb.textContent=(isOk?'✅ صح! ':'❌ غلط. ')+questions[qIdx].exp;
+  document.getElementById('card-'+qIdx).classList.add(isOk?'answered-correct':'answered-wrong');
+  if(isOk) score++; else wrong++;
+  answered++;
+  updateSticky();
+  if(answered===questions.length){
+    document.getElementById('submitBtn').disabled=false;
+    setTimeout(()=>document.getElementById('submitBtn').scrollIntoView({behavior:'smooth',block:'center'}),400);
+  }
+}
+
+function updateSticky() {
+  const total=questions.length, done=score+wrong;
+  const pct=done>0?Math.round(score/done*100):0;
+  document.getElementById('sNum').textContent=`${answered}/${total} أجبت`;
+  document.getElementById('sC').textContent=`✅ ${score}`;
+  document.getElementById('sW').textContent=`❌ ${wrong}`;
+  document.getElementById('sP').textContent=`📊 ${pct}%`;
+  document.getElementById('sFill').style.width=(total>0?Math.round(answered/total*100):0)+'%';
+}
+
+function showResults() {
+  const total=questions.length, pct=Math.round(score/total*100);
+  document.getElementById('rScore').textContent=score;
+  document.getElementById('rTotal').textContent=total;
+  document.getElementById('rC').textContent=score;
+  document.getElementById('rW').textContent=wrong;
+  document.getElementById('rP').textContent=pct+'%';
+  setTimeout(()=>{ document.getElementById('ringFg').style.strokeDashoffset=402-(402*pct/100); },100);
+  document.getElementById('rMsg').textContent=
+    pct>=90?'🌟 Excellent! أنت متقن لمادة الكمبيوتر!':
+    pct>=75?'👏 Very Good! مجهود رائع، كمّل!':
+    pct>=60?'👍 Good! راجع الغلط وحاول تاني!':'📚 تحتاج مراجعة أكتر، إنت قادر!';
+  const rev=document.getElementById('reviewDiv');
+  rev.innerHTML='<h3>📋 مراجعة الإجابات الغلط</h3>';
+  let hasWrong=false;
+  questions.forEach((q,i)=>{
+    const card=document.getElementById('card-'+i);
+    if(card&&card.classList.contains('answered-wrong')){
+      hasWrong=true;
+      rev.innerHTML+=`<div class="rev-item wrong">
+        <div class="rt">❌ Q${q.n}: ${q.q}</div>
+        <div>✅ الإجابة الصحيحة: <strong>${q.opts[q.c]}</strong></div>
+        <div class="exp">${q.exp}</div>
+      </div>`;
+    }
+  });
+  if(!hasWrong) rev.innerHTML='<p style="color:#10b981;text-align:center;padding:24px;font-size:1.1em;">🎉 كل إجاباتك صح! ممتاز!</p>';
+  document.getElementById('resultsBox').style.display='block';
+  document.getElementById('resultsBox').scrollIntoView({behavior:'smooth'});
+}
+
+function goHome() {
+  document.getElementById('quizWrapper').style.display='none';
+  document.getElementById('stickyBar').style.display='none';
+  document.getElementById('startScreen').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
